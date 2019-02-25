@@ -6,8 +6,10 @@ import hibernate.entity.InstructorDetail;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
-public class EagerLazyDemo {
+
+public class FetchJoinDemo {
 
     public static void main(String[] args) {
 
@@ -24,14 +26,25 @@ public class EagerLazyDemo {
         try {
 
             session.beginTransaction();
+
             int theId = 1;
-            Instructor tempInstructor = session.get(Instructor.class, theId);
+
+            Query<Instructor> query =
+                    session.createQuery("select i from Instructor i "
+                                    + "JOIN FETCH i.courses "
+                                    + "where i.id=:theInstructorId",
+                            Instructor.class);
+
+            query.setParameter("theInstructorId", theId);
+
+            Instructor tempInstructor = query.getSingleResult();
+
             System.out.println("Instructor: " + tempInstructor);
 
-
             session.getTransaction().commit();
+
             session.close();
-            System.out.println("Courses: " + tempInstructor.getCourses());
+
 
         }
         finally {
