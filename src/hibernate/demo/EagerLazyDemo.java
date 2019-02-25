@@ -24,6 +24,11 @@ public class EagerLazyDemo {
         try {
 
             session.beginTransaction();
+            int theId = 1;
+            Instructor tempInstructor = session.get(Instructor.class, theId);
+            System.out.println("Instructor: " + tempInstructor);
+            System.out.println("Courses: " + tempInstructor.getCourses());
+
             session.getTransaction().commit();
 
         }
